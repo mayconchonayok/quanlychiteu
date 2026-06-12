@@ -84,3 +84,42 @@ def hien_thi_danh_muc(categories):
     while i < len(categories):
         print(f'{i + 1}. {categories.get(i)}')
         i += 1
+
+
+def tao_bang_tong_hop():
+    return DynamicArray()
+
+
+def cong_vao_tong_hop(bang, ten_danh_muc, so_tien):
+    i = 0
+    while i < len(bang):
+        cap = bang.get(i)
+        if cap[0].lower() == ten_danh_muc.lower():
+            cap[1] += so_tien
+            return
+        i += 1
+    bang.append([ten_danh_muc, so_tien])
+
+
+def sap_xep_tong_hop_giam_dan(bang):
+    n = len(bang)
+    i = 0
+    while i < n - 1:
+        j = 0
+        while j < n - i - 1:
+            a = bang.get(j)
+            b = bang.get(j + 1)
+            if a[1] < b[1]:
+                bang.set(j, b)
+                bang.set(j + 1, a)
+            j += 1
+        i += 1
+
+
+def tong_hop_chi_theo_danh_muc(transactions):
+    bang = tao_bang_tong_hop()
+    for t in transactions:
+        if t.trans_type == 'expense':
+            cong_vao_tong_hop(bang, t.category, t.amount)
+    sap_xep_tong_hop_giam_dan(bang)
+    return bang
