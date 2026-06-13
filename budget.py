@@ -1,11 +1,12 @@
+from transaction import chon_danh_muc
 from models import Budget
 from validators import read_month, read_non_empty, read_positive_money
 
 
-def them_ngan_sach(budgets):
+def them_ngan_sach(budgets, categories):
     print('\n--- ĐẶT NGÂN SÁCH ---')
     month = read_month('Tháng (YYYY-MM): ')
-    category = read_non_empty('Danh mục: ')
+    category = chon_danh_muc(categories)
     limit = read_positive_money('Hạn mức: ')
 
     for b in budgets:

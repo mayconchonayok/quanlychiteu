@@ -93,7 +93,7 @@ class ExpenseApp:
                 xoa_danh_muc(self.categories)
                 await save_categories(self.categories)
             elif choice == '12':
-                them_ngan_sach(self.budgets)
+                them_ngan_sach(self.budgets, self.categories)
                 await save_budgets(self.budgets)
             elif choice == '13':
                 hien_thi_ngan_sach(self.transactions, self.budgets)
