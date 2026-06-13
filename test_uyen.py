@@ -47,9 +47,28 @@ def test_tong_hop_chi_theo_danh_muc():
     assert bang.get(1)[1] == 150000
     print("PASS: tong hop chi theo danh muc")
 
+def test_bao_cao_nam():
+    trans = LinkedList()
+    trans.append(Transaction(1, '2026-06-01', 'income', 'Luong', 5000000, ''))
+    trans.append(Transaction(2, '2026-06-02', 'expense', 'An uong', 150000, ''))
+    trans.append(Transaction(3, '2025-12-01', 'expense', 'Di lai', 100000, ''))
+    from report import hien_thi_bao_cao_nam
+    import io, sys
+    captured = io.StringIO()
+    sys.stdout = captured
+    hien_thi_bao_cao_nam(trans, '2026')
+    sys.stdout = sys.__stdout__
+    output = captured.getvalue()
+    assert '5,000,000' in output
+    assert '150,000' in output
+    print("PASS: bao cao theo nam")
+
+
 test_dynamic_array_resize()
 test_linked_list_remove_by_id()
 test_tim_danh_muc()
 test_bubble_sort_categories()
 test_tong_hop_chi_theo_danh_muc()
+test_bao_cao_nam()
+
 print("\nTat ca test deu PASS.")
