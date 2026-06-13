@@ -1,5 +1,7 @@
 import csv
 import os
+from data_structures import DynamicArray
+from category import tong_hop_chi_theo_danh_muc
 
 REPORT_FOLDER = 'reports'
 
@@ -9,14 +11,10 @@ def tao_thu_muc_bao_cao():
         os.makedirs(REPORT_FOLDER)
 
 
+
+
 def lay_du_lieu_chi_tieu_theo_danh_muc(transactions):
-    data = {}
-    for t in transactions:
-        if t.trans_type == 'expense':
-            if t.category not in data:
-                data[t.category] = 0
-            data[t.category] += t.amount
-    return data
+    return tong_hop_chi_theo_danh_muc(transactions)
 
 
 def xuat_bao_cao_txt(transactions):
@@ -24,13 +22,18 @@ def xuat_bao_cao_txt(transactions):
     data = lay_du_lieu_chi_tieu_theo_danh_muc(transactions)
     filename = os.path.join(REPORT_FOLDER, 'bao_cao_chi_tieu.txt')
     total = 0
-    for k in data:
-        total += data[k]
+    i = 0
+    while i < len(data):
+        total += data.get(i)[1]
+        i += 1
     with open(filename, 'w', encoding='utf-8') as f:
         f.write('===== BÁO CÁO CHI TIÊU THEO DANH MỤC =====\n\n')
-        f.write(f'Tổng chi: {total:,.0f} VND\n\n')
-        for k in data:
-            f.write(f'{k}: {data[k]:,.0f} VND\n')
+        f.write(f'Tong chi: {total:,.0f} VND\n\n')
+        i = 0
+        while i < len(data):
+            cap = data.get(i)
+            f.write(f'{cap[0]}: {cap[1]:,.0f} VND\n')
+            i += 1
     print('Đã xuất báo cáo TXT:', filename)
 
 
@@ -41,8 +44,11 @@ def xuat_bao_cao_csv(transactions):
     with open(filename, 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['Danh mục', 'Số tiền'])
-        for k in data:
-            writer.writerow([k, data[k]])
+        i = 0
+        while i < len(data):
+            cap = data.get(i)
+            writer.writerow([cap[0], cap[1]])
+            i += 1
     print('Đã xuất báo cáo CSV:', filename)
 
 
@@ -59,9 +65,12 @@ def ve_bieu_do_cot(transactions):
         return
     labels = []
     values = []
-    for k in data:
-        labels.append(k)
-        values.append(data[k])
+    i = 0
+    while i < len(data):
+        cap = data.get(i)
+        labels.append(cap[0])
+        values.append(cap[1])
+        i += 1
     plt.figure(figsize=(8, 5))
     plt.bar(labels, values)
     plt.title('Biểu đồ cột chi tiêu theo danh mục')
@@ -88,9 +97,12 @@ def ve_bieu_do_tron(transactions):
         return
     labels = []
     values = []
-    for k in data:
-        labels.append(k)
-        values.append(data[k])
+    i = 0
+    while i < len(data):
+        cap = data.get(i)
+        labels.append(cap[0])
+        values.append(cap[1])
+        i += 1
     plt.figure(figsize=(7, 7))
     plt.pie(values, labels=labels, autopct='%1.1f%%')
     plt.title('Biểu đồ tròn cơ cấu chi tiêu')

@@ -1,6 +1,52 @@
 from models import Transaction
 from validators import read_transaction_type, read_date, read_non_empty, read_positive_money, read_int
 
+def chon_danh_muc(categories):
+    print('Danh mục có sẵn:')
+    i = 0
+    while i < len(categories):
+        print(f'{i + 1}. {categories.get(i).name}')
+        i += 1
+    print(f'{len(categories) + 1}. Nhập tên mới')
+    while True:
+        chon = input('Chọn danh mục: ').strip()
+        try:
+            idx = int(chon) - 1
+            if 0 <= idx < len(categories):
+                return categories.get(idx).name
+            elif idx == len(categories):
+                return read_non_empty('Tên danh mục mới: ')
+            else:
+                print('Lựa chọn không hợp lệ.')
+        except ValueError:
+            print('Vui lòng nhập số.')
+
+
+def chon_danh_muc_tuy_chon(categories):
+    print('Danh muc co san:')
+    i = 0
+    while i < len(categories):
+        print(f'{i + 1}. {categories.get(i).name}')
+        i += 1
+    print(f'{len(categories) + 1}. Nhap ten moi')
+    print('0. Giu nguyen')
+    while True:
+        chon = input('Chon: ').strip()
+        if chon == '':
+            return None
+        try:
+            idx = int(chon)
+            if idx == 0:
+                return None
+            elif 1 <= idx <= len(categories):
+                return categories.get(idx - 1).name
+            elif idx == len(categories) + 1:
+                return read_non_empty('Ten danh muc moi: ')
+            else:
+                print('Lua chon khong hop le.')
+        except ValueError:
+            print('Vui long nhap so.')
+
 
 def next_transaction_id(transactions):
     max_id = 0
@@ -10,11 +56,11 @@ def next_transaction_id(transactions):
     return max_id + 1
 
 
-async def them_giao_dich(transactions, save_func, cache=None):
+async def them_giao_dich(transactions, categories, save_func, cache=None):
     print('\n--- THÊM GIAO DỊCH ---')
     trans_type = read_transaction_type()
     date = read_date('Ngày (YYYY-MM-DD): ')
-    category = read_non_empty('Danh mục: ')
+    category = chon_danh_muc(categories)
     amount = read_positive_money('Số tiền: ')
     note = input('Ghi chú: ').strip()
 
@@ -26,7 +72,7 @@ async def them_giao_dich(transactions, save_func, cache=None):
     print('Đã thêm giao dịch.')
 
 
-def sua_giao_dich(transactions, cache=None):
+def sua_giao_dich(transactions, categories, cache=None):
     print('\n--- SỬA GIAO DỊCH ---')
     trans_id = read_int('Nhập mã giao dịch cần sửa: ')
     t = transactions.find_by_id(trans_id)
@@ -35,13 +81,22 @@ def sua_giao_dich(transactions, cache=None):
         return False
 
     print('Bỏ trống nếu không muốn sửa thông tin đó.')
-    new_date = input(f'Ngày mới ({t.date}): ').strip()
-    if new_date != '':
-        t.date = new_date
+    import re
+    while True:
+        new_date = input(f'Ngày mới ({t.date}, bỏ trống để giữ nguyên): ').strip()
+        if new_date == '':
+            break
+        if re.match(r'^\d{4}-\d{2}-\d{2}$', new_date):
+            t.date = new_date
+            break
+        print('Ngày không hợp lệ, vui lòng nhập lại.')
 
-    new_category = input(f'Danh mục mới ({t.category}): ').strip()
-    if new_category != '':
-        t.category = new_category
+    print(f'Danh mục hiện tại: {t.category}')
+    sua_dm = input('Sửa danh mục? (c/k): ').strip().lower()
+    if sua_dm == 'c':
+        new_category = chon_danh_muc_tuy_chon(categories)
+        if new_category is not None:
+            t.category = new_category
 
     new_amount = input(f'Số tiền mới ({t.amount:,.0f}): ').replace(',', '').strip()
     if new_amount != '':
