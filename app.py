@@ -66,10 +66,10 @@ class ExpenseApp:
             if choice == '1':
                 self.show_transactions()
             elif choice == '2':
-                await them_giao_dich(self.transactions, save_transactions, self.cache)
+                await them_giao_dich(self.transactions, self.categories, save_transactions, self.cache)
                 logging.info('Thêm giao dịch')
             elif choice == '3':
-                if sua_giao_dich(self.transactions, self.cache):
+                if sua_giao_dich(self.transactions, self.categories, self.cache):
                     await save_transactions(self.transactions)
                     logging.info('Sửa giao dịch')
             elif choice == '4':
