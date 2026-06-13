@@ -112,3 +112,39 @@ def hien_thi_chi_theo_danh_muc(transactions, cache=None):
         print(f'{cap[0]:<15} {cap[1]:>12,.0f}  {"*" * bar_len}')
         i += 1
 
+def hien_thi_bao_cao_nam(transactions, year, cache=None):
+    income = 0
+    expense = 0
+    by_category = DynamicArray()
+    for t in transactions:
+        if not t.date.startswith(year):
+            continue
+        if t.trans_type == 'income':
+            income += t.amount
+        elif t.trans_type == 'expense':
+            expense += t.amount
+            found = False
+            i = 0
+            while i < len(by_category):
+                cap = by_category.get(i)
+                if cap[0].lower() == t.category.lower():
+                    cap[1] += t.amount
+                    found = True
+                    break
+                i += 1
+            if not found:
+                by_category.append([t.category, t.amount])
+    print(f'\n--- BAO CAO NAM {year} ---')
+    print(f'Tong thu : {income:,.0f}')
+    print(f'Tong chi : {expense:,.0f}')
+    print(f'So du    : {income - expense:,.0f}')
+    print('\nChi theo danh muc:')
+    if len(by_category) == 0:
+        print('Khong co khoan chi trong nam nay.')
+    else:
+        i = 0
+        while i < len(by_category):
+            cap = by_category.get(i)
+            print(f'- {cap[0]}: {cap[1]:,.0f}')
+            i += 1
+

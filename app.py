@@ -1,5 +1,5 @@
 import logging
-from report import ReportCache, hien_thi_tong_quan, hien_thi_bao_cao_thang, hien_thi_chi_theo_danh_muc
+from report import ReportCache, hien_thi_tong_quan, hien_thi_bao_cao_thang, hien_thi_chi_theo_danh_muc, hien_thi_bao_cao_nam
 from transaction import them_giao_dich, sua_giao_dich, xoa_giao_dich, tim_giao_dich_theo_ma, tim_giao_dich_theo_ngay, tim_giao_dich_theo_loai
 from category import them_danh_muc, sua_danh_muc, xoa_danh_muc, hien_thi_danh_muc
 from budget import them_ngan_sach, hien_thi_ngan_sach
@@ -56,6 +56,7 @@ class ExpenseApp:
         print('18. Xuất báo cáo CSV')
         print('19. Vẽ biểu đồ cột')
         print('20. Vẽ biểu đồ tròn')
+        print('21. Báo cáo theo năm')
         print('0. Lưu và thoát')
 
     async def run(self):
@@ -112,6 +113,9 @@ class ExpenseApp:
                 ve_bieu_do_cot(self.transactions)
             elif choice == '20':
                 ve_bieu_do_tron(self.transactions)
+            elif choice == '21':
+                year = input('Nhap nam can xem (YYYY): ').strip()
+                hien_thi_bao_cao_nam(self.transactions, year)
             elif choice == '0':
                 await self.save_all()
                 print('Đã lưu dữ liệu. Hẹn gặp lại!')
