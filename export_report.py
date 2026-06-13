@@ -41,7 +41,7 @@ def xuat_bao_cao_csv(transactions):
     tao_thu_muc_bao_cao()
     data = lay_du_lieu_chi_tieu_theo_danh_muc(transactions)
     filename = os.path.join(REPORT_FOLDER, 'bao_cao_chi_tieu.csv')
-    with open(filename, 'w', encoding='utf-8', newline='') as f:
+    with open(filename, 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['Danh mục', 'Số tiền'])
         i = 0
